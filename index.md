@@ -15,4 +15,6 @@ title: Student Blog
 # Andrew Kim
 
 >> wa wa gaming time
+>> yes
+
 
