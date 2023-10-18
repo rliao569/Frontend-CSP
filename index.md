@@ -4,18 +4,8 @@ title: Student Blog
 ---
 
 
-### FRONTEND REPOSITORY FOR TEAM INFLUENCER INNOVATERS. 
+### HomePage
 
-## PLANS:
+[Start](https://rliao569.github.io/Frontend-CSP/2023/10/12/Test_Map_IPYNB_2_.html)
 
-# Ryan Liao
-
->> wa wa gaming time
-
-# Andrew Kim
-
->> wa wa gaming time
->> yes
->>no
-
-
+    
