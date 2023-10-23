@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #game-container {
+            position: absolute;
+            width: 1200px;
+            height: 600px;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Del_norte_wiki.png/640px-Del_norte_wiki.png');
+            background-size: cover;
+    }
+        #target {
+            position: relative;
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+            cursor: pointer;
+    }
+        #score {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+    }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="target"></div>
+    </div>
+    <p id="score">Score: 0</p>
+    <script>
+        const gameContainer = document.getElementById("game-container");
+        const target = document.getElementById("target");
+        const scoreDisplay = document.getElementById("score");
+        let score = 0;
+        let dotClicked = false;
+        function moveTarget() {
+            const maxWidth = gameContainer.clientWidth - target.clientWidth;
+            const maxHeight = gameContainer.clientHeight - target.clientHeight;
+            const randomX = Math.random() * maxWidth;
+            const randomY = Math.random() * maxHeight;
+            target.style.left = randomX + "px";
+            target.style.top = randomY + "px";
+            dotClicked = false; // Reset the dotClicked flag
+        }
+        target.addEventListener("click", () => {
+            if (!dotClicked) {
+                const earnedPoints = 1; // You always get 1 point for clicking on the dot
+                score += earnedPoints;
+                scoreDisplay.textContent = `Score: ${score}`;
+                alert(`You got ${earnedPoints} point!`); // Display pop-up message
+                dotClicked = true; // Set the flag to true
+                moveTarget();
+            }
+        });
+        gameContainer.addEventListener("click", () => {
+            if (!dotClicked) {
+                // You get 0 points if you click anywhere in the game container except the red dot
+                alert(`You got 0 points!`);
+                moveTarget();
+            }
+        });
+        moveTarget();
+    </script>
+</body>
+</html>
