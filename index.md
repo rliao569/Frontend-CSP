@@ -6,6 +6,7 @@ title: Student Blog
 
 ### HomePage
 
-[Start](https://rliao569.github.io/Frontend-CSP/2023/10/12/Test_Map_IPYNB_2_.html)
+[WANNA PLAY A GAME????](https://rliao569.github.io/Frontend-CSP/2023/23/23/Map_Test_in_HTML_.html)
+
 
     
