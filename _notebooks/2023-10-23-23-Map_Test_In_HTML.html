@@ -36,15 +36,23 @@
         let score = 0;
         let dotClicked = false;
 
-        // Define specific coordinates where the red dot can appear
+        // Define specific coordinates where the red dot can appear like class coordinates
+
         const specificCoordinates = [
             { x: 230, y: 420 },
             { x: 359, y: 489 },
-            // Add more coordinates as needed
+            //add more coordinates once we get more pictures
         ];
 
+        let lastRandomIndex = -1;
+        //Changes position of button and button won't appear same place twice (for the most part)
         function moveTarget() {
-            const randomIndex = Math.floor(Math.random() * specificCoordinates.length);
+            let randomIndex;
+
+            do {
+                randomIndex = Math.floor(Math.random() * specificCoordinates.length);
+            } while (randomIndex === lastRandomIndex);
+            
             const { x, y } = specificCoordinates[randomIndex];
 
             // Check if the specified coordinates are within the visible area
