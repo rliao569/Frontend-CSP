@@ -44,7 +44,7 @@
             //add more coordinates once we get more pictures
         ];
 
-        let lastRandomIndex = parseInt(localStorage.getItem('lastRandomIndex')) || specificCoordinates.length;
+        let lastRandomIndex = -1;
         //Changes position of button and button won't appear same place twice (for the most part)
         function moveTarget() {
             let randomIndex;
@@ -52,9 +52,6 @@
             do {
                 randomIndex = Math.floor(Math.random() * specificCoordinates.length);
             } while (randomIndex === lastRandomIndex);
-
-            // Update the lastRandomIndex in localStorage
-            localStorage.setItem('lastRandomIndex', randomIndex.toString());
             
             const { x, y } = specificCoordinates[randomIndex];
 
