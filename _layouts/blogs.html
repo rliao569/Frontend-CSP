@@ -1,20 +1,6 @@
 ---
 layout: default
 ---
-<script src="{{ url_for('static', filename='js/three.r119.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/vanta.birds.min.js') }}"></script>
-<script>
-    VANTA.BIRDS({
-        el: "body",
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00
-    })
-</script>
 
 <div class="home">
   {%- if page.title -%}
@@ -89,5 +75,5 @@ layout: default
 
   {%- endif -%}
 
-</div>
+</div> 
 
