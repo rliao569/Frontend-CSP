@@ -75,6 +75,8 @@
                 alert(`You got ${earnedPoints} point!`); // Display pop-up message
                 dotClicked = true; // Set the flag to true
                 moveTarget();
+                //stop the event propagation
+                event.stopPropagation();
             }
         });
 
