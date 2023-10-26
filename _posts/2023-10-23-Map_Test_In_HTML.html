@@ -5,8 +5,8 @@
         /* Your CSS styles here */
         #game-container {
             position: relative;
-            width: 200px;
-            height: 150px;
+            width: 1000px;
+            height: 900px;
             background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Del_norte_wiki.png/640px-Del_norte_wiki.png');
             background-size: cover;
         }
@@ -95,6 +95,8 @@
                 alert(`You got ${earnedPoints} point!`);
                 dotClicked = true;
                 moveTarget();
+                //event to fix the 0 point bug 
+                event.stopPropagation();
             }
         });
 
@@ -188,10 +190,6 @@
             }
         });
 
-
-
-
-        // Automatically call getMessage function every 100 milliseconds
     </script>
 </body>
 </html>
