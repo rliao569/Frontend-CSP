@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Del Norte Geoguessr</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC">
+<style>
+body, html {height: 100%}
+body,h1,h2,h3,h4,h5,h6 {font-family: "Amatic SC", sans-serif}
+.menu {display: none}
+.bgimg {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url("https://knastructural.com/wp-content/uploads/2017/01/Del-Norte-HS-Poway-K12-Structural-San-Diego.jpg");
+  min-height: 90%;
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar (sit on top) -->
+<div class="w3-top w3-hide-small">
+  <div class="w3-bar w3-xlarge w3-black w3-opacity w3-hover-opacity-off" id="myNavbar">
+    <a href="#" class="w3-bar-item w3-button">HOME</a>
+    <a href="#menu" class="w3-bar-item w3-button">RULES</a>
+    <a href="#about" class="w3-bar-item w3-button">ABOUT</a>
+    <a href="#myMap" class="w3-bar-item w3-button">CONTACT</a>
+  </div>
+</div>
+  
+<!-- Header with image -->
+<header class="bgimg w3-display-container w3-grayscale-min" id="home">
+  <div class="w3-display-bottomleft w3-padding">
+    <span class="w3-tag w3-xlarge">Made by Saaras, Will, Andrew, Ryan, Daniel</span>
+  </div>
+  <div class="w3-display-middle w3-center">
+    <span class="w3-text-white w3-hide-small" style="font-size:100px">Del Norte Geoguessr</span>
+    
+    <p><a href="mapgame.html" class="w3-button w3-xxlarge w3-black">start</a></p>
+  </div>
+</header>
+
+
+<!-- Menu Container -->
+<div class="w3-container w3-black w3-padding-64 w3-xxlarge" id="menu">
+  <!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #game-container {
+            position: relative;
+            width: 1200px;
+            height: 600px;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Del_norte_wiki.png/640px-Del_norte_wiki.png');
+            background-size: cover;
+        }
+        #target {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        #score {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="target"></div>
+    </div>
+    <p id="score">Score: 0</p>
+    <script>
+        const gameContainer = document.getElementById("game-container");
+        const target = document.getElementById("target");
+        const scoreDisplay = document.getElementById("score");
+        let score = 0;
+        let dotClicked = false;
+
+        // Define specific coordinates where the red dot can appear like class coordinates
+
+        const specificCoordinates = [
+            { x: 230, y: 420 },
+            { x: 359, y: 489 },
+            //add more coordinates once we get more pictures
+        ];
+
+        let lastRandomIndex = -1;
+        //Changes position of button and button won't appear same place twice (for the most part)
+        function moveTarget() {
+            let randomIndex;
+
+            do {
+                randomIndex = Math.floor(Math.random() * specificCoordinates.length);
+            } while (randomIndex === lastRandomIndex);
+            
+            const { x, y } = specificCoordinates[randomIndex];
+
+            // Check if the specified coordinates are within the visible area
+            const maxX = gameContainer.clientWidth - target.clientWidth;
+            const maxY = gameContainer.clientHeight - target.clientHeight;
+
+            target.style.left = Math.min(x, maxX) + "px";
+            target.style.top = Math.min(y, maxY) + "px";
+            dotClicked = false; // Reset the dotClicked flag
+        }
+
+        target.addEventListener("click", () => {
+            if (!dotClicked) {
+                const earnedPoints = 1; // You always get 1 point for clicking on the dot
+                score += earnedPoints;
+                scoreDisplay.textContent = `Score: ${score}`;
+                alert(`You got ${earnedPoints} point!`); // Display pop-up message
+                dotClicked = true; // Set the flag to true
+                moveTarget();
+                //stop the event propagation
+                event.stopPropagation();
+            }
+        });
+
+        gameContainer.addEventListener("click", () => {
+            if (!dotClicked) {
+                // You get 0 points if you click anywhere in the game container except the red dot
+                alert(`You got 0 points!`);
+                moveTarget();
+            }
+        });
+
+        moveTarget();
+    </script>
+</body>
+</html>
+<!-- About Container -->
+<div class="w3-container w3-padding-64 w3-red w3-grayscale w3-xlarge" id="about">
+    <div class="w3-content">
+      <h1 class="w3-center w3-jumbo" style="margin-bottom:64px">About</h1>
+      <p>GeoGuessr is an engaging and addictive online geographic guessing game that challenges players to test their knowledge of the world and their deduction skills by dropping them in random locations across the globe using Google Street View imagery.
+  Developed by Anton Wallén, GeoGuessr offers a unique and immersive experience for geography enthusiasts, explorers, and trivia buffs.
+  The objective of GeoGuessr is simple: players find themselves in an unfamiliar place, and they must determine their location by exploring the surrounding environment through a series of static images taken from Google Street View. These images can range from bustling urban streets and scenic landscapes to remote, rural areas. Players can pan, zoom, and navigate within these images to gather clues about their whereabouts.
+  To make an educated guess, players can rely on various factors such as architecture, road signs, vegetation, weather conditions, and even the direction of shadows. They can also use their knowledge of geography, languages, and cultures to narrow down the possibilities. Once they feel confident about their guess, they drop a pin on a world map to mark their chosen location..</p>
+      <p><strong></strong> <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpyDdWvvJZiSD9CfBo4fMhNRxAa1tDTP53RA&usqp=CAU" style="width:150px" class="w3-circle w3-right" alt="Chef"></p>
+  
+      
+    </div>
+  </div>
