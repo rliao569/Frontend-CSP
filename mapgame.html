@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: black; /* Dark background color */
+            color: white; /* Text color */
+            font-family: "Amatic SC", sans-serif;
+        }
+        .menu {
+            display: none;
+        }
+
+        .bgimg {
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Del_norte_wiki.png/640px-Del_norte_wiki.png');
+            min-height: 90%;
+        }
+
+        #game-container {
+            position: relative;
+            width: 80vw; /* 80% of the viewport width */
+            max-width: 1200px;
+            height: 80vh; /* 80% of the viewport height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 50px; /* Added margin to move it down */
+        }
+
+        #target {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        #score {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        
+        /* Styles for the navbar */
+        .w3-top {
+            position: fixed;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .w3-bar {
+            background-color: rgba(0, 0, 0, 0.5) !important; /* Dark background with opacity */
+        }
+
+        .w3-bar-item {
+            padding: 20px;
+            font-family: "Amatic SC", sans-serif; /* Retain font family */
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Navbar (sit on top) -->
+    <div class="w3-top w3-hide-small">
+        <div class="w3-bar w3-xlarge w3-black w3-opacity w3-hover-opacity-off" id="myNavbar">
+            <a href="#" class="w3-bar-item w3-button">HOME</a>
+            <a href="#menu" class="w3-bar-item w3-button">RULES</a>
+            <a href="#about" class="w3-bar-item w3-button">ABOUT</a>
+            <a href="#myMap" class="w3-bar-item w3-button">CONTACT</a>
+        </div>
+    </div>
+
+    <!-- Header with image -->
+    <div class="bgimg w3-display-container w3-grayscale-min" id="home">
+        <div class="w3-display-bottomleft w3-padding">
+            <span class="w3-tag w3-xlarge">Made by Saaras, Will, Andrew, Ryan, Daniel</span>
+        </div>
+        <div id="game-container">
+            <div id="target"></div>
+        </div>
+        <p id "score">Score: 0</p>
+    </div>
+    <script>
+        const gameContainer = document.getElementById("game-container");
+        const target = document.getElementById("target");
+        const scoreDisplay = document.getElementById("score");
+        let score = 0;
+        let dotClicked = false;
+
+        // Define specific coordinates where the red dot can appear like class coordinates
+
+        const specificCoordinates = [
+            { x: 230, y: 420 },
+            { x: 359, y: 489 },
+            //add more coordinates once we get more pictures
+        ];
+
+        let lastRandomIndex = -1;
+        //Changes position of button and button won't appear same place twice (for the most part)
+        function moveTarget() {
+            let randomIndex;
+
+            do {
+                randomIndex = Math.floor(Math.random() * specificCoordinates.length);
+            } while (randomIndex === lastRandomIndex);
+            
+            const { x, y } = specificCoordinates[randomIndex];
+
+            // Check if the specified coordinates are within the visible area
+            const maxX = gameContainer.clientWidth - target.clientWidth;
+            const maxY = gameContainer.clientHeight - target.clientHeight;
+
+            target.style.left = Math.min(x, maxX) + "px";
+            target.style.top = Math.min(y, maxY) + "px"; // Corrected
+
+            dotClicked = false; // Reset the dotClicked flag
+        }
+
+        target.addEventListener("click", (event) => {
+            if (!dotClicked) {
+                const earnedPoints = 1; // You always get 1 point for clicking on the dot
+                score += earnedPoints;
+                scoreDisplay.textContent = `Score: ${score}`;
+                alert(`You got ${earnedPoints} point!`); // Display pop-up message
+                dotClicked = true; // Set the flag to true
+                moveTarget();
+                event.stopPropagation();
+            }
+        });
+
+
+        gameContainer.addEventListener("click", () => {
+            if (!dotClicked) {
+                // You get 0 points if you click anywhere in the game container except the red dot
+                alert(`You got 0 points!`);
+                moveTarget();
+            }
+        });
+
+        moveTarget();
+        function fetchAndDisplayImages() {
+        // You should replace this URL with your actual API endpoint to fetch image data.
+        const apiUrl = "https://teaminfluencerinnovator.stu.nighthawkcodingsociety.com/api/locations/"
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                const imageContainer = document.getElementById("image-container");
+
+                // Loop through the data and create image elements for each image.
+                data.forEach(location => {
+                    const image = document.createElement("img");
+
+                    // Set the image source to the base64 data
+                    image.src = `data:image/jpg;base64, ${location.image}`;
+                    image.alt = location.location_name; 
+
+                    // Append the image to the image container.
+                    imageContainer.appendChild(image);
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching images:", error);
+            });
+    }
+
+    // Call the function to fetch and display images.
+    fetchAndDisplayImages();
+    </script>
+    <div id="image-container" class="w3-container"></div>
+</body>
+</html>
