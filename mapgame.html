@@ -35,7 +35,10 @@
             justify-content: center;
             margin-top: 50px; /* Added margin to move it down */
         }
-
+        #image-container img {
+        max-width: 100%;
+        height: auto;
+        }
         #target {
             position: absolute;
             width: 20px;
@@ -149,34 +152,39 @@
 
         moveTarget();
         function fetchAndDisplayImages() {
-        // You should replace this URL with your actual API endpoint to fetch image data.
-        const apiUrl = "https://teaminfluencerinnovator.stu.nighthawkcodingsociety.com/api/locations/"
+            // You should replace this URL with your actual API endpoint to fetch image data.
+            const apiUrl = "https://teaminfluencerinnovator.stu.nighthawkcodingsociety.com/api/locations/";
 
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                const imageContainer = document.getElementById("image-container");
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const imageList = document.getElementById("image-list");
 
-                // Loop through the data and create image elements for each image.
-                data.forEach(location => {
-                    const image = document.createElement("img");
+                    // Loop through the data and create list items for each image.
+                    data.forEach(location => {
+                        const listItem = document.createElement("li");
+                        const image = document.createElement("img");
 
-                    // Set the image source to the base64 data
-                    image.src = `data:image/jpg;base64, ${location.image}`;
-                    image.alt = location.location_name; 
+                        // Set the image source to the base64 data
+                        image.src = `data:image/jpg;base64, ${location.image}`;
+                        image.alt = location.location_name;
 
-                    // Append the image to the image container.
-                    imageContainer.appendChild(image);
+                        // Append the image to the list item
+                        listItem.appendChild(image);
+
+                        // Append the list item to the image list
+                        imageList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching images:", error);
                 });
-            })
-            .catch(error => {
-                console.error("Error fetching images:", error);
-            });
-    }
+        }
 
-    // Call the function to fetch and display images.
-    fetchAndDisplayImages();
+        // Call the function to fetch and display images.
+        fetchAndDisplayImages();
+
     </script>
-    <div id="image-container" class="w3-container"></div>
+    <div id="image-container" class="w3-container" style="display: flex; flex-wrap: wrap;"></div>
 </body>
 </html>
