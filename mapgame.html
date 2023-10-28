@@ -179,6 +179,9 @@
             if (!dotClicked) {
                 // You get 0 points if you click anywhere in the game container except the red dot
                 alert("You got 0 points!");
+                currentIndex++
+                dotClicked = true
+                moveTarget();
             }
         });
 
