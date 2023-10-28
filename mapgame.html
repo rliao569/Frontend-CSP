@@ -105,6 +105,7 @@
         let coordinatesData = {}; // Store the coordinates and images
         let dictCoordinates = {}; // Global variable to store the organized data
         let currentIndex = 0; // Keep track of the current coordinate
+        let dotClicked = false; // Flag to check if the dot has been clicked
 
         function fetchAndDisplayImages() {
             // You should replace this URL with your actual API endpoint to fetch image data.
@@ -130,30 +131,37 @@
         const target = document.getElementById("target");
         const scoreDisplay = document.getElementById("score");
         let score = 0;
-        let dotClicked = false;
 
         function moveTarget() {
-            const keys = Object.keys(dictCoordinates)
-            for (const key of keys) {
-                const value = dictCoordinates[key];
-                const location_name = value.location_name
-                const coordinatesParsed =  value.location_name.split(",");
-                const x = parseInt(coordinatesParsed[0], 10);
-                const y = parseInt(coordinatesParsed[1], 10);
+            if (!dotClicked) {
+                return; // Stop moving to the next location if dotClicked is false
+            }
 
-                const maxX = gameContainer.clientWidth - target.clientWidth;
-                const maxY = gameContainer.clientHeight - target.clientHeight;
+            const keys = Object.keys(dictCoordinates);
+            const key = keys[currentIndex];
+            const value = dictCoordinates[key];
+            const location_name = value.location_name;
+            const coordinatesParsed = location_name.split(",");
+            const x = parseInt(coordinatesParsed[0], 10);
+            const y = parseInt(coordinatesParsed[1], 10);
 
-                target.style.left = Math.min(x, maxX) + "px";
-                target.style.top = Math.min(y, maxY) + "px";
+            const maxX = gameContainer.clientWidth - target.clientWidth;
+            const maxY = gameContainer.clientHeight - target.clientHeight;
 
-                dotClicked = false;
-                currentIndex++;
-        
-                // Set a timeout to move the target to the next location after a delay (e.g., 2 seconds)
-                setTimeout(moveTarget, 2000);
-            } 
+            target.style.left = Math.min(x, maxX) + "px";
+            target.style.top = Math.min(y, maxY) + "px";
+
+            dotClicked = false;
+
+            // Set a timeout to move the target to the next location after a delay (e.g., 2 seconds)
+            setTimeout(() => {
+                if (!dotClicked) {
+                    currentIndex++; // Move to the next location even if the dot hasn't been clicked
+                    moveTarget();
+                }
+            }, 2000);
         }
+
 
         target.addEventListener("click", (event) => {
             if (!dotClicked) {
@@ -162,6 +170,8 @@
                 scoreDisplay.textContent = `Score: ${score}`;
                 alert(`You got ${earnedPoints} point!`); // Display a pop-up message
                 dotClicked = true; // Set the flag to true
+                currentIndex++; // Move to the next location when the dot is clicked
+                moveTarget(); // Move to the next location
             }
         });
 
@@ -171,6 +181,7 @@
                 alert("You got 0 points!");
             }
         });
+
     </script>
 </body>
 </html>
