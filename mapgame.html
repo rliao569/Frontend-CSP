@@ -69,6 +69,11 @@
             padding: 20px;
             font-family: "Amatic SC", sans-serif; /* Retain font family */
         }
+        .image-display-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
@@ -86,47 +91,68 @@
     <!-- Header with image -->
     <div class="bgimg w3-display-container w3-grayscale-min" id="home">
         <div class="w3-display-bottomleft w3-padding">
-            <span class="w3-tag w3-xlarge">Made by Saaras, Will, Andrew, Ryan, Daniel</span>
+            <span class="w3-tag w3-xlarge" id="score">Score: 0</span>
         </div>
-        <div id="game-container">
-            <div id="target"></div>
+        <div class="image-display-container"> <!-- Modified: Added a container for images -->
+            <div id="game-container">
+                <div id="target"></div>
+            </div>
+            <div id="image-container"> <!-- Modified: Container for images -->
+            </div>
         </div>
-        <p id "score">Score: 0</p>
     </div>
     <script>
+        let coordinatesData = {}; // Store the coordinates and images
+        let dictCoordinates = {}; // Global variable to store the organized data
+        let currentIndex = 0; // Keep track of the current coordinate
+
+        function fetchAndDisplayImages() {
+            // You should replace this URL with your actual API endpoint to fetch image data.
+            const apiUrl = 'https://teaminfluencerinnovator.stu.nighthawkcodingsociety.com/api/locations/';
+
+            // Make an HTTP GET request to the API
+            fetch(apiUrl)
+                .then(response => response.json()) // Parse the JSON response
+                .then(data => {
+                    coordinatesData = data; // Store the data as it is
+                    dictCoordinates = data;
+                    // Once data is loaded, start the game
+                    moveTarget();
+                })
+                .catch(error => {
+                    console.error("Error fetching images:", error);
+                });
+        }
+
+        fetchAndDisplayImages();
+
         const gameContainer = document.getElementById("game-container");
         const target = document.getElementById("target");
         const scoreDisplay = document.getElementById("score");
         let score = 0;
         let dotClicked = false;
 
-        // Define specific coordinates where the red dot can appear like class coordinates
-
-        const specificCoordinates = [
-            { x: 230, y: 420 },
-            { x: 359, y: 489 },
-            //add more coordinates once we get more pictures
-        ];
-
-        let lastRandomIndex = -1;
-        //Changes position of button and button won't appear same place twice (for the most part)
         function moveTarget() {
-            let randomIndex;
+            const keys = Object.keys(dictCoordinates)
+            for (const key of keys) {
+                const value = dictCoordinates[key];
+                const location_name = value.location_name
+                const coordinatesParsed =  value.location_name.split(",");
+                const x = parseInt(coordinatesParsed[0], 10);
+                const y = parseInt(coordinatesParsed[1], 10);
 
-            do {
-                randomIndex = Math.floor(Math.random() * specificCoordinates.length);
-            } while (randomIndex === lastRandomIndex);
-            
-            const { x, y } = specificCoordinates[randomIndex];
+                const maxX = gameContainer.clientWidth - target.clientWidth;
+                const maxY = gameContainer.clientHeight - target.clientHeight;
 
-            // Check if the specified coordinates are within the visible area
-            const maxX = gameContainer.clientWidth - target.clientWidth;
-            const maxY = gameContainer.clientHeight - target.clientHeight;
+                target.style.left = Math.min(x, maxX) + "px";
+                target.style.top = Math.min(y, maxY) + "px";
 
-            target.style.left = Math.min(x, maxX) + "px";
-            target.style.top = Math.min(y, maxY) + "px"; // Corrected
-
-            dotClicked = false; // Reset the dotClicked flag
+                dotClicked = false;
+                currentIndex++;
+        
+                // Set a timeout to move the target to the next location after a delay (e.g., 2 seconds)
+                setTimeout(moveTarget, 2000);
+            } 
         }
 
         target.addEventListener("click", (event) => {
@@ -134,57 +160,17 @@
                 const earnedPoints = 1; // You always get 1 point for clicking on the dot
                 score += earnedPoints;
                 scoreDisplay.textContent = `Score: ${score}`;
-                alert(`You got ${earnedPoints} point!`); // Display pop-up message
+                alert(`You got ${earnedPoints} point!`); // Display a pop-up message
                 dotClicked = true; // Set the flag to true
-                moveTarget();
-                event.stopPropagation();
             }
         });
-
 
         gameContainer.addEventListener("click", () => {
             if (!dotClicked) {
                 // You get 0 points if you click anywhere in the game container except the red dot
-                alert(`You got 0 points!`);
-                moveTarget();
+                alert("You got 0 points!");
             }
         });
-
-        moveTarget();
-        function fetchAndDisplayImages() {
-            // You should replace this URL with your actual API endpoint to fetch image data.
-            const apiUrl = "https://teaminfluencerinnovator.stu.nighthawkcodingsociety.com/api/locations/";
-
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const imageList = document.getElementById("image-list");
-
-                    // Loop through the data and create list items for each image.
-                    data.forEach(location => {
-                        const listItem = document.createElement("li");
-                        const image = document.createElement("img");
-
-                        // Set the image source to the base64 data
-                        image.src = `data:image/jpg;base64, ${location.image}`;
-                        image.alt = location.location_name;
-
-                        // Append the image to the list item
-                        listItem.appendChild(image);
-
-                        // Append the list item to the image list
-                        imageList.appendChild(listItem);
-                    });
-                })
-                .catch(error => {
-                    console.error("Error fetching images:", error);
-                });
-        }
-
-        // Call the function to fetch and display images.
-        fetchAndDisplayImages();
-
     </script>
-    <div id="image-container" class="w3-container" style="display: flex; flex-wrap: wrap;"></div>
 </body>
 </html>
