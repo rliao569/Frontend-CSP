@@ -36,8 +36,11 @@
             margin-top: 50px; /* Added margin to move it down */
         }
         #image-container img {
-        max-width: 100%;
-        height: auto;
+            position: fixed;
+            top: 0;
+            right: 0;
+            padding: 20px;
+            max-width: 30%;
         }
         #target {
             position: absolute;
@@ -97,10 +100,11 @@
             <div id="game-container">
                 <div id="target"></div>
             </div>
-            <div id="image-container"> <!-- Modified: Container for images -->
             </div>
         </div>
     </div>
+
+    <div id="image-container" class="w3-container" style="display: flex; flex-wrap: wrap;"></div>
     <script>
         let coordinatesData = {}; // Store the coordinates and images
         let dictCoordinates = {}; // Global variable to store the organized data
@@ -141,17 +145,32 @@
                 const coordinatesParsed = location_name.split(",");
                 const x = parseInt(coordinatesParsed[0], 10);
                 const y = parseInt(coordinatesParsed[1], 10);
+                const imageSrc = `data:image/jpg;base64, ${value.image}`;
 
                 const maxX = gameContainer.clientWidth - target.clientWidth;
                 const maxY = gameContainer.clientHeight - target.clientHeight;
 
                 target.style.left = Math.min(x, maxX) + "px";
-                target.style.top = Math.min(y, maxY) + "px";
+                target.style.top = Math.min(y, maxY) + "px"; 
+
+                // Get the image container by ID
+                const imageContainer = document.getElementById("image-container");
+
+                // Create a new image element
+                const image = document.createElement("img");
+                image.src = imageSrc;
+
+                // Clear the existing content of the image container
+                imageContainer.innerHTML = '';
+
+                // Append the new image to the image container
+                imageContainer.appendChild(image);
             } else {
                 // If there are no more locations, stop moving the target
                 target.style.display = 'none';
             }
         }
+
 
         gameContainer.addEventListener("click", () => {
             if (!dotClicked) {
