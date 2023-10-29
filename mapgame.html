@@ -80,7 +80,7 @@
     
     <!-- Navbar (sit on top) -->
     <div class="w3-top w3-hide-small">
-        <div class="w3-bar w3-xlarge w3-black w3-opacity w3-hover-opacity-off" id="myNavbar">
+        <div class "w3-bar w3-xlarge w3-black w3-opacity w3-hover-opacity-off" id="myNavbar">
             <a href="https://rliao569.github.io/Frontend-CSP/" class="w3-button w3 w3-black">HOME</a>
             <a href="#menu" class="w3-bar-item w3-button">RULES</a>
             <a href="#about" class="w3-bar-item w3-button">ABOUT</a>
@@ -104,7 +104,7 @@
     <script>
         let coordinatesData = {}; // Store the coordinates and images
         let dictCoordinates = {}; // Global variable to store the organized data
-        let currentIndex = 0; // Keep track of the current coordinate
+        let currentIndex = 0; // Initialize to 0
         let dotClicked = false; // Flag to check if the dot has been clicked
 
         function fetchAndDisplayImages() {
@@ -117,7 +117,7 @@
                 .then(data => {
                     coordinatesData = data; // Store the data as it is
                     dictCoordinates = data;
-                    // Once data is loaded, start the game
+                    // Call moveTarget immediately to position the dot at the first location
                     moveTarget();
                 })
                 .catch(error => {
@@ -125,7 +125,7 @@
                 });
         }
 
-        fetchAndDisplayImages();
+        fetchAndDisplayImages(); // Call fetchAndDisplayImages to initiate the process
 
         const gameContainer = document.getElementById("game-container");
         const target = document.getElementById("target");
@@ -133,56 +133,42 @@
         let score = 0;
 
         function moveTarget() {
-            if (!dotClicked) {
-                return; // Stop moving to the next location if dotClicked is false
-            }
-
             const keys = Object.keys(dictCoordinates);
-            const key = keys[currentIndex];
-            const value = dictCoordinates[key];
-            const location_name = value.location_name;
-            const coordinatesParsed = location_name.split(",");
-            const x = parseInt(coordinatesParsed[0], 10);
-            const y = parseInt(coordinatesParsed[1], 10);
+            if (currentIndex >= 0 && currentIndex < keys.length) {
+                const key = keys[currentIndex];
+                const value = dictCoordinates[key];
+                const location_name = value.location_name;
+                const coordinatesParsed = location_name.split(",");
+                const x = parseInt(coordinatesParsed[0], 10);
+                const y = parseInt(coordinatesParsed[1], 10);
 
-            const maxX = gameContainer.clientWidth - target.clientWidth;
-            const maxY = gameContainer.clientHeight - target.clientHeight;
+                const maxX = gameContainer.clientWidth - target.clientWidth;
+                const maxY = gameContainer.clientHeight - target.clientHeight;
 
-            target.style.left = Math.min(x, maxX) + "px";
-            target.style.top = Math.min(y, maxY) + "px";
-
-            dotClicked = false;
-
-            // Set a timeout to move the target to the next location after a delay (e.g., 2 seconds)
-            setTimeout(() => {
-                if (!dotClicked) {
-                    currentIndex++; // Move to the next location even if the dot hasn't been clicked
-                    moveTarget();
-                }
-            }, 2000);
-        }
-
-
-        target.addEventListener("click", (event) => {
-            if (!dotClicked) {
-                const earnedPoints = 1; // You always get 1 point for clicking on the dot
-                score += earnedPoints;
-                scoreDisplay.textContent = `Score: ${score}`;
-                alert(`You got ${earnedPoints} point!`); // Display a pop-up message
-                dotClicked = true; // Set the flag to true
-                currentIndex++; // Move to the next location when the dot is clicked
-                moveTarget(); // Move to the next location
+                target.style.left = Math.min(x, maxX) + "px";
+                target.style.top = Math.min(y, maxY) + "px";
+            } else {
+                // If there are no more locations, stop moving the target
+                target.style.display = 'none';
             }
-        });
+        }
 
         gameContainer.addEventListener("click", () => {
             if (!dotClicked) {
-                // You get 0 points if you click anywhere in the game container except the red dot
-                alert("You got 0 points!");
-                currentIndex++
-                dotClicked = true
+                currentIndex++; // Move to the next location when there's no click
                 moveTarget();
             }
+            dotClicked = false;
+        });
+
+        target.addEventListener("click", (event) => {
+            const earnedPoints = 1; // You always get 1 point for clicking on the dot
+            score += earnedPoints;
+            scoreDisplay.textContent = `Score: ${score}`;
+            alert(`You got ${earnedPoints} point!`); // Display a pop-up message
+            currentIndex++; // Move to the next location when the dot is clicked
+            moveTarget();
+            dotClicked = true; // Set the flag to true
         });
 
     </script>
