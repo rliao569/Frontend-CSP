@@ -45,8 +45,9 @@
         #target {
             position: absolute;
             width: 100px; /* Set the width to 100px (or any value you prefer) */
-            height: 100px; /* Set the height to 100px (or any value you prefer) */
-            background-color: rgba(0, 0, 255, 0.5); /* Fully transparent blue color (0% opacity) */
+            width: 70px;
+            height: 70px;
+            background-color: rgba(0, 0, 255, 0); /* Transparent blue color with 50% opacity */
             border-radius: 50%;
             cursor: pointer;
         }
@@ -121,6 +122,7 @@
                 .then(data => {
                     coordinatesData = data; // Store the data as it is
                     dictCoordinates = data;
+                    console.log(dictCoordinates)
                     // Call moveTarget immediately to position the dot at the first location
                     moveTarget();
                 })
