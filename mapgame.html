@@ -36,8 +36,11 @@
             margin-top: 50px; /* Added margin to move it down */
         }
         #image-container img {
-        max-width: 100%;
-        height: auto;
+            position: fixed;
+            top: 0;
+            right: 0;
+            padding: 20px;
+            max-width: 30%;
         }
         #target {
             position: absolute;
@@ -80,7 +83,7 @@
     
     <!-- Navbar (sit on top) -->
     <div class="w3-top w3-hide-small">
-        <div class="w3-bar w3-xlarge w3-black w3-opacity w3-hover-opacity-off" id="myNavbar">
+        <div class "w3-bar w3-xlarge w3-black w3-opacity w3-hover-opacity-off" id="myNavbar">
             <a href="https://rliao569.github.io/Frontend-CSP/" class="w3-button w3 w3-black">HOME</a>
             <a href="#menu" class="w3-bar-item w3-button">RULES</a>
             <a href="#about" class="w3-bar-item w3-button">ABOUT</a>
@@ -97,50 +100,36 @@
             <div id="game-container">
                 <div id="target"></div>
             </div>
-            <div id="image-container"> <!-- Modified: Container for images -->
             </div>
         </div>
     </div>
+
+    <div id="image-container" class="w3-container" style="display: flex; flex-wrap: wrap;"></div>
     <script>
         let coordinatesData = {}; // Store the coordinates and images
         let dictCoordinates = {}; // Global variable to store the organized data
-        let currentIndex = 0; // Keep track of the current coordinate
+        let currentIndex = 0; // Initialize to 0
         let dotClicked = false; // Flag to check if the dot has been clicked
 
         function fetchAndDisplayImages() {
-            const apiUrl = "https://teaminfluencerinnovator.stu.nighthawkcodingsociety.com/api/locations/";
+            // You should replace this URL with your actual API endpoint to fetch image data.
+            const apiUrl = 'https://teaminfluencerinnovator.stu.nighthawkcodingsociety.com/api/locations/';
 
+            // Make an HTTP GET request to the API
             fetch(apiUrl)
-                .then(response => response.json())
+                .then(response => response.json()) // Parse the JSON response
                 .then(data => {
-                    const imageContainer = document.getElementById("image-container");
-
-                    // Clear previous images in the image container
-                    imageContainer.innerHTML = '';
-
-                    // Loop through the data and create img elements for each image.
-                    data.forEach(location => {
-                        // Check if the location has images
-                        if (location.images && location.images.length > 0) {
-                            // Loop through the images and create img elements
-                            location.images.forEach(imageUrl => {
-                                const img = document.createElement('img');
-                                img.src = imageUrl;
-                                img.alt = 'Image';
-                                img.className = 'image'; // You can add CSS class for styling if needed
-                                imageContainer.appendChild(img); // Append the image to the image container
-                            });
-                        }
-                    });
+                    coordinatesData = data; // Store the data as it is
+                    dictCoordinates = data;
+                    // Call moveTarget immediately to position the dot at the first location
+                    moveTarget();
                 })
                 .catch(error => {
                     console.error("Error fetching images:", error);
                 });
         }
 
-        // Call the function to fetch and display images.
-        fetchAndDisplayImages();
-
+        fetchAndDisplayImages(); // Call fetchAndDisplayImages to initiate the process
 
         const gameContainer = document.getElementById("game-container");
         const target = document.getElementById("target");
@@ -148,99 +137,58 @@
         let score = 0;
 
         function moveTarget() {
-            if (!dotClicked) {
-                return; // Stop moving to the next location if dotClicked is false
-            }
-
             const keys = Object.keys(dictCoordinates);
-            const key = keys[currentIndex];
-            const value = dictCoordinates[key];
-            const location_name = value.location_name;
-            const coordinatesParsed = location_name.split(",");
-            const x = parseInt(coordinatesParsed[0], 10);
-            const y = parseInt(coordinatesParsed[1], 10);
+            if (currentIndex >= 0 && currentIndex < keys.length) {
+                const key = keys[currentIndex];
+                const value = dictCoordinates[key];
+                const location_name = value.location_name;
+                const coordinatesParsed = location_name.split(",");
+                const x = parseInt(coordinatesParsed[0], 10);
+                const y = parseInt(coordinatesParsed[1], 10);
+                const imageSrc = `data:image/jpg;base64, ${value.image}`;
 
-            const maxX = gameContainer.clientWidth - target.clientWidth;
-            const maxY = gameContainer.clientHeight - target.clientHeight;
+                const maxX = gameContainer.clientWidth - target.clientWidth;
+                const maxY = gameContainer.clientHeight - target.clientHeight;
 
-            target.style.left = Math.min(x, maxX) + "px";
-            target.style.top = Math.min(y, maxY) + "px";
+                target.style.left = Math.min(x, maxX) + "px";
+                target.style.top = Math.min(y, maxY) + "px"; 
 
-            // Clear the previous images in the image container
-            const imageContainer = document.getElementById("image-container");
-            imageContainer.innerHTML = '';
+                // Get the image container by ID
+                const imageContainer = document.getElementById("image-container");
 
-            // Check if the current location has images
-            if (value.images && value.images.length > 0) {
-                // Loop through the images and create img elements
-                value.images.forEach(imageUrl => {
-                    const img = document.createElement('img');
-                    img.src = imageUrl;
-                    img.alt = 'Image';
-                    img.className = 'image'; // You can add CSS class for styling if needed
-                    imageContainer.appendChild(img); // Append the image to the image container
-                });
+                // Create a new image element
+                const image = document.createElement("img");
+                image.src = imageSrc;
+
+                // Clear the existing content of the image container
+                imageContainer.innerHTML = '';
+
+                // Append the new image to the image container
+                imageContainer.appendChild(image);
+            } else {
+                // If there are no more locations, stop moving the target
+                target.style.display = 'none';
             }
-
-    dotClicked = false;
-
-    // Set a timeout to move the target to the next location after a delay (e.g., 2 seconds)
-    setTimeout(() => {
-        if (!dotClicked) {
-            currentIndex++; // Move to the next location even if the dot hasn't been clicked
-            moveTarget();
         }
-    }, 2000);
-}
 
-
-        target.addEventListener("click", (event) => {
-            if (!dotClicked) {
-                const earnedPoints = 1; // You always get 1 point for clicking on the dot
-                score += earnedPoints;
-                scoreDisplay.textContent = `Score: ${score}`;
-                alert(`You got ${earnedPoints} point!`); // Display a pop-up message
-                dotClicked = true; // Set the flag to true
-                currentIndex++; // Move to the next location when the dot is clicked
-                moveTarget(); // Move to the next location
-            }
-        });
 
         gameContainer.addEventListener("click", () => {
             if (!dotClicked) {
-                // You get 0 points if you click anywhere in the game container except the red dot
-                alert("You got 0 points!");
-                currentIndex++
-                dotClicked = true
+                currentIndex++; // Move to the next location when there's no click
                 moveTarget();
             }
+            dotClicked = false;
         });
-        const imageContainer = document.getElementById("image-container");
 
-        // Check if the container has child elements (images)
-        if (imageContainer.hasChildNodes()) {
-            // The container has images
-            console.log("Container has images.");
-            
-            // Get the list of images within the container
-            const images = imageContainer.children;
-            
-            // Loop through the images and log their sources
-            for (let i = 0; i < images.length; i++) {
-                const imageUrl = images[i].src;
-                console.log("Image Source: " + imageUrl);
-            }
-        } else {
-            // The container is empty
-            console.log("Container is empty.");
-        }
-        
-
-
-
-
-
-
+        target.addEventListener("click", (event) => {
+            const earnedPoints = 1; // You always get 1 point for clicking on the dot
+            score += earnedPoints;
+            scoreDisplay.textContent = `Score: ${score}`;
+            alert(`You got ${earnedPoints} point!`); // Display a pop-up message
+            currentIndex++; // Move to the next location when the dot is clicked
+            moveTarget();
+            dotClicked = true; // Set the flag to true
+        });
 
     </script>
 </body>
