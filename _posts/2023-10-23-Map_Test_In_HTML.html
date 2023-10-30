@@ -41,8 +41,6 @@
         <p id="slot-result"></p>
     </div>
 
-    <audio id="win-audio" src="C:\Users\ryanl\Downloads\Voicy_Xue huā piāo piāo yi jian mei - Meme.mp3" preload="none"></audio>
-
     <div>
         <button id="get-button">Get Message</button>
         <input type="text" id="message" placeholder="Enter your message..." />
@@ -58,13 +56,12 @@
         const scoreDisplay = document.getElementById("score");
         const rollButton = document.getElementById("roll-button");
         const slotResult = document.getElementById("slot-result");
-        const winAudio = document.getElementById("win-audio");
         let score = 0;
         let dotClicked = false;
 
         const specificCoordinates = [
-            { x: 40, y: 40 },
-            { x: 20, y: 50 },
+            { x: 400, y: 400 },
+            { x: 200, y: 500 },
             // Add more coordinates once you get more pictures
         ];
 
@@ -122,7 +119,6 @@
                 slotResult.textContent = `You rolled and won: ${selectedItem}`;
 
                 if (selectedItem === "Great Wall of China") {
-                    winAudio.play();
                 }
             } else {
                 slotResult.textContent = "Not enough points to roll.";
