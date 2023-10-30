@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: black; /* Dark background color */
+            color: white; /* Text color */
+            font-family: "Amatic SC", sans-serif;
+        }
+        .menu {
+            display: none;
+        }
+
+        .bgimg {
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Del_norte_wiki.png/640px-Del_norte_wiki.png');
+            min-height: 90%;
+        }
+
+        #game-container {
+            position: relative;
+            width: 80vw; /* 80% of the viewport width */
+            max-width: 1200px;
+            height: 80vh; /* 80% of the viewport height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 50px; /* Added margin to move it down */
+        }
+        #image-container img {
+            position: fixed;
+            top: 0;
+            right: 0;
+            padding: 20px;
+            max-width: 30%;
+        }
+        #target {
+            position: absolute;
+            width: 100px; /* Set the width to 100px (or any value you prefer) */
+            height: 100px; /* Set the height to 100px (or any value you prefer) */
+            background-color: rgba(0, 0, 255, 0.5); /* Fully transparent blue color (0% opacity) */
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        #score {
+            position: absolute;
+            width: 800px;
+            height: 800px;
+        }
+        
+        /* Styles for the navbar */
+        .w3-top {
+            position: fixed;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .w3-bar {
+            background-color: rgba(0, 0, 0, 0.5) !important; /* Dark background with opacity */
+        }
+
+        .w3-bar-item {
+            padding: 20px;
+            font-family: "Amatic SC", sans-serif; /* Retain font family */
+        }
+        .image-display-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Navbar (sit on top) -->
+    <div class="w3-top w3-hide-small">
+        <div class "w3-bar w3-xlarge w3-black w3-opacity w3-hover-opacity-off" id="myNavbar">
+            <a href="https://rliao569.github.io/Frontend-CSP/" class="w3-button w3 w3-black">HOME</a>
+            <a href="#menu" class="w3-bar-item w3-button">RULES</a>
+            <a href="#about" class="w3-bar-item w3-button">ABOUT</a>
+            <a href="#myMap" class="w3-bar-item w3-button">CONTACT</a>
+        </div>
+    </div>
+
+    <!-- Header with image -->
+    <div class="bgimg w3-display-container w3-grayscale-min" id="home">
+        <div class="w3-display-bottomleft w3-padding">
+            <span class="w3-tag w3-xlarge" id="score">Score: 0</span>
+        </div>
+        <div class="image-display-container"> <!-- Modified: Added a container for images -->
+            <div id="game-container">
+                <div id="target"></div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="image-container" class="w3-container" style="display: flex; flex-wrap: wrap;"></div>
+    <script>
+        let coordinatesData = {}; // Store the coordinates and images
+        let dictCoordinates = {}; // Global variable to store the organized data
+        let currentIndex = 0; // Initialize to 0
+        let dotClicked = false; // Flag to check if the dot has been clicked
+
+        function fetchAndDisplayImages() {
+            // You should replace this URL with your actual API endpoint to fetch image data.
+            const apiUrl = 'https://teaminfluencerinnovator.stu.nighthawkcodingsociety.com/api/locations/';
+
+            // Make an HTTP GET request to the API
+            fetch(apiUrl)
+                .then(response => response.json()) // Parse the JSON response
+                .then(data => {
+                    coordinatesData = data; // Store the data as it is
+                    dictCoordinates = data;
+                    // Call moveTarget immediately to position the dot at the first location
+                    moveTarget();
+                })
+                .catch(error => {
+                    console.error("Error fetching images:", error);
+                });
+        }
+
+        fetchAndDisplayImages(); // Call fetchAndDisplayImages to initiate the process
+
+        const gameContainer = document.getElementById("game-container");
+        const target = document.getElementById("target");
+        const scoreDisplay = document.getElementById("score");
+        let score = 0;
+
+        function moveTarget() {
+            const keys = Object.keys(dictCoordinates);
+            if (currentIndex >= 0 && currentIndex < keys.length) {
+                const key = keys[currentIndex];
+                const value = dictCoordinates[key];
+                const location_name = value.location_name;
+                const coordinatesParsed = location_name.split(",");
+                const x = parseInt(coordinatesParsed[0], 10);
+                const y = parseInt(coordinatesParsed[1], 10);
+                const imageSrc = `data:image/jpg;base64, ${value.image}`;
+
+                const maxX = gameContainer.clientWidth - target.clientWidth;
+                const maxY = gameContainer.clientHeight - target.clientHeight;
+
+                target.style.left = Math.min(x, maxX) + "px";
+                target.style.top = Math.min(y, maxY) + "px"; 
+
+                // Get the image container by ID
+                const imageContainer = document.getElementById("image-container");
+
+                // Create a new image element
+                const image = document.createElement("img");
+                image.src = imageSrc;
+
+                // Clear the existing content of the image container
+                imageContainer.innerHTML = '';
+
+                // Append the new image to the image container
+                imageContainer.appendChild(image);
+            } else {
+                // If there are no more locations, stop moving the target
+                target.style.display = 'none';
+            }
+        }
+
+
+        gameContainer.addEventListener("click", () => {
+            if (!dotClicked) {
+                currentIndex++; // Move to the next location when there's no click
+                moveTarget();
+            }
+            dotClicked = false;
+        });
+
+        target.addEventListener("click", (event) => {
+            const earnedPoints = 1; // You always get 1 point for clicking on the dot
+            score += earnedPoints;
+            scoreDisplay.textContent = `Score: ${score}`;
+            alert(`You got ${earnedPoints} point!`); // Display a pop-up message
+            currentIndex++; // Move to the next location when the dot is clicked
+            moveTarget();
+            dotClicked = true; // Set the flag to true
+        });
+
+    </script>
+</body>
+</html>
