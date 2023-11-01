@@ -95,6 +95,7 @@
         </div>
     </div>
 
+   
     <!-- Header with image -->
     <div class="bgimg w3-display-container w3-grayscale-min" id="home">
         <div class="w3-display-bottomleft w3-padding">
@@ -196,26 +197,25 @@
         function startTimer(duration, display) {
     var timer = duration, minutes, seconds;
     setInterval(function () {
-        minutes = parseInt(timer / 60, 10)
-        seconds = parseInt(timer % 60, 10);
+        minutes = parseInt(timer / 60, 10)//calculates the minutes left
+        seconds = parseInt(timer % 60, 10);// calculates second left
 
-        minutes = minutes < 10 ? "0" + minutes : minutes; //calculates the minutes left
-        seconds = seconds < 10 ? "0" + seconds : seconds; // calculates second left
-
+        minutes = minutes < 10 ? "0" + minutes : minutes; 
+        seconds = seconds < 10 ? "0" + seconds : seconds; 
         display.textContent = minutes + ":" + seconds; //displays the time left
 
         if (--timer < 0) {
             timer = 0;
         }
         if(timer==0){
-            alert("GAME OVER") //alerts when the game is over
+            alert("GAME OVER Your Final Score:"+score) //alerts when the game is over
             window.location.href = 'https://rliao569.github.io/Frontend-CSP/';
         }
     }, 1000);
 }
 
 window.onload = function () { //calls the method when the window is opened
-    var time = 60 / 2, // time in seconds
+    var time = 120 / 2, // time in seconds
         display = document.querySelector('#gameTimerDisplay');
     startTimer(time, display); //display
     
