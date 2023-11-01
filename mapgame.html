@@ -88,7 +88,6 @@
             <a href="#menu" class="w3-bar-item w3-button">RULES</a>
             <a href="#about" class="w3-bar-item w3-button">ABOUT</a>
             <a href="#myMap" class="w3-bar-item w3-button">CONTACT</a>
-            <div>Registration closes in <span id="time">05:00</span> minutes!</div>
         </div>
     </div>
 
@@ -190,24 +189,7 @@
             moveTarget();
             dotClicked = true; // Set the flag to true
         });
-        function gametimer(){
-            var timer = duration, minutes, seconds;
-    setInterval(function () {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
 
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-
-        display.textContent = minutes + ":" + seconds;
-
-        if (--timer < 0) {
-            timer = duration;
-        }
-    }, 1000);
-        }
-
-        
     </script>
 </body>
 </html>
