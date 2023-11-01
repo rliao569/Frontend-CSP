@@ -88,7 +88,10 @@
             <a href="#menu" class="w3-bar-item w3-button">RULES</a>
             <a href="#about" class="w3-bar-item w3-button">ABOUT</a>
             <a href="#myMap" class="w3-bar-item w3-button">CONTACT</a>
-            <div>Game ends in <span id="time">05:00</span> minutes!</div>
+            <div id="safeTimer">
+                <h2>Game Timer</h2>
+                <p id="safeTimerDisplay">00:30</p>
+                </div>
         </div>
     </div>
 
@@ -190,55 +193,28 @@
             moveTarget();
             dotClicked = true; // Set the flag to true
         });
-        function CountDownTimer(duration, granularity) {
-  this.duration = duration;
-  this.granularity = granularity || 1000;
-  this.tickFtns = [];
-  this.running = false;
+        function startTimer(duration, display) {
+    var timer = duration, minutes, seconds;
+    setInterval(function () {
+        minutes = parseInt(timer / 60, 10)
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = minutes + ":" + seconds;
+
+        if (--timer < 0) {
+            timer = 0;
+            // timer = duration; // uncomment this line to reset timer automatically after reaching 0
+        }
+    }, 1000);
 }
 
-CountDownTimer.prototype.start = function() {
-  if (this.running) {
-    return;
-  }
-  this.running = true;
-  var start = Date.now(),
-      that = this,
-      diff, obj;
-
-  (function timer() {
-    diff = that.duration - (((Date.now() - start) / 1000) | 0);
-        
-    if (diff > 0) {
-      setTimeout(timer, that.granularity);
-    } else {
-      diff = 0;
-      that.running = false;
-    }
-
-    obj = CountDownTimer.parse(diff);
-    that.tickFtns.forEach(function(ftn) {
-      ftn.call(this, obj.minutes, obj.seconds);
-    }, that);
-  }());
-};
-
-CountDownTimer.prototype.onTick = function(ftn) {
-  if (typeof ftn === 'function') {
-    this.tickFtns.push(ftn);
-  }
-  return this;
-};
-
-CountDownTimer.prototype.expired = function() {
-  return !this.running;
-};
-
-CountDownTimer.parse = function(seconds) {
-  return {
-    'minutes': (seconds / 60) | 0,
-    'seconds': (seconds % 60) | 0
-  };
+window.onload = function () {
+    var time = 60 / 2, // your time in seconds here
+        display = document.querySelector('#safeTimerDisplay');
+    startTimer(time, display);
 };
 
         
