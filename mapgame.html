@@ -132,6 +132,7 @@
     <div id="image-container" class="w3-container" style="display: flex; flex-wrap: wrap;"></div>
     <!-- JavaScript code -->
     <script>
+        let gameOver = false;
         let coordinatesData = {}; // Store the coordinates and images
         let dictCoordinates = {}; // Global variable to store the organized data
         let currentIndex = 0; // Initialize to 0
@@ -209,6 +210,11 @@
                 moveTarget();
             }
             dotClicked = false;
+            if (gameOver) {
+                // Handle game over here
+                alert("Game Over! Your Final Score: " + score);
+                window.location.href = 'https://rliao569.github.io/Frontend-CSP/';
+            }
         });
 
         // Event listener for target dot click
