@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Meta tags and stylesheets -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC">
     <style>
+        /* CSS styles for the body and elements */
         body, html {
             height: 100%;
             margin: 0;
@@ -19,6 +21,7 @@
             display: none;
         }
 
+        /* Background image styles */
         .bgimg {
             background-repeat: no-repeat;
             background-size: cover;
@@ -26,6 +29,7 @@
             min-height: 90%;
         }
 
+        /* Game container styles */
         #game-container {
             position: relative;
             width: 80vw; /* 80% of the viewport width */
@@ -52,6 +56,7 @@
             cursor: pointer;
         }
 
+        /* Score display styles */
         #score {
             position: absolute;
             width: 800px;
@@ -100,7 +105,7 @@
     </div>
     <!-- Navbar (sit on top) -->
     <div class="w3-top w3-hide-small">
-        <div class "w3-bar w3-xlarge w3-black w3-opacity w3-hover-opacity-off" id="myNavbar">
+        <div class="w3-bar w3-xlarge w3-black w3-opacity w3-hover-opacity-off" id="myNavbar">
             <a href="https://rliao569.github.io/Frontend-CSP/" class="w3-button w3 w3-black">HOME</a>
             <a href="#menu" class="w3-bar-item w3-button">RULES</a>
             <a href="#about" class="w3-bar-item w3-button">ABOUT</a>
@@ -108,11 +113,10 @@
             <div id="gameTimer">
                 <h2>Time Remaining</h2>
                 <p id="gameTimerDisplay">01:00</p>
-                </div>
+            </div>
         </div>
     </div>
 
-   
     <!-- Header with image -->
     <div class="bgimg w3-display-container w3-grayscale-min" id="home">
         <div class="w3-display-bottomleft w3-padding">
@@ -122,17 +126,18 @@
             <div id="game-container">
                 <div id="target"></div>
             </div>
-            </div>
         </div>
     </div>
 
     <div id="image-container" class="w3-container" style="display: flex; flex-wrap: wrap;"></div>
+    <!-- JavaScript code -->
     <script>
         let coordinatesData = {}; // Store the coordinates and images
         let dictCoordinates = {}; // Global variable to store the organized data
         let currentIndex = 0; // Initialize to 0
         let dotClicked = false; // Flag to check if the dot has been clicked
 
+        // Function to fetch and display images
         function fetchAndDisplayImages() {
             // You should replace this URL with your actual API endpoint to fetch image data.
             const apiUrl = 'https://teaminfluencerinnovator.stu.nighthawkcodingsociety.com/api/locations/';
@@ -154,11 +159,13 @@
 
         fetchAndDisplayImages(); // Call fetchAndDisplayImages to initiate the process
 
+        // Get DOM elements
         const gameContainer = document.getElementById("game-container");
         const target = document.getElementById("target");
         const scoreDisplay = document.getElementById("score");
         let score = 0;
 
+        // Function to move the target dot
         function moveTarget() {
             const keys = Object.keys(dictCoordinates);
             if (currentIndex >= 0 && currentIndex < keys.length) {
@@ -195,7 +202,7 @@
             }
         }
 
-
+        // Event listener for game container click
         gameContainer.addEventListener("click", () => {
             if (!dotClicked) {
                 currentIndex++; // Move to the next location when there's no click
@@ -204,6 +211,7 @@
             dotClicked = false;
         });
 
+        // Event listener for target dot click
         target.addEventListener("click", (event) => {
             const earnedPoints = 1; // You always get 1 point for clicking on the dot
             score += earnedPoints;
@@ -218,47 +226,48 @@
                 window.location.href = 'https://rliao569.github.io/Frontend-CSP/';
             }
         });
+
+        // Function to start the timer
         function startTimer(duration, display) {
-    var timer = duration, minutes, seconds;
-    setInterval(function () {
-        minutes = parseInt(timer / 60, 10)//calculates the minutes left
-        seconds = parseInt(timer % 60, 10);// calculates second left
+            var timer = duration, minutes, seconds;
+            setInterval(function () {
+                minutes = parseInt(timer / 60, 10)//calculates the minutes left
+                seconds = parseInt(timer % 60, 10);// calculates second left
 
-        minutes = minutes < 10 ? "0" + minutes : minutes; 
-        seconds = seconds < 10 ? "0" + seconds : seconds; 
-        display.textContent = minutes + ":" + seconds; //displays the time left
+                minutes = minutes < 10 ? "0" + minutes : minutes; 
+                seconds = seconds < 10 ? "0" + seconds : seconds; 
+                display.textContent = minutes + ":" + seconds; //displays the time left
 
-        if (--timer < 0) {
-            timer = 0;
+                if (--timer < 0) {
+                    timer = 0;
+                }
+                if(timer==0){
+                    alert("GAME OVER Your Final Score:"+score) //alerts when the game is over
+                    window.location.href = 'https://rliao569.github.io/Frontend-CSP/';
+                }
+            }, 1000);
         }
-        if(timer==0){
-            alert("GAME OVER Your Final Score:"+score) //alerts when the game is over
-            window.location.href = 'https://rliao569.github.io/Frontend-CSP/';
-        }
-    }, 1000);
-}
 
-window.onload = function () { //calls the method when the window is opened
-    var time = 120 / 2, // time in seconds
-        display = document.querySelector('#gameTimerDisplay');
-    startTimer(time, display); //display
-    
-};
+        window.onload = function () { //calls the method when the window is opened
+            var time = 120 / 2, // time in seconds
+                display = document.querySelector('#gameTimerDisplay');
+            startTimer(time, display); //display
+        };
 
-// Function to hide the loading screen
-function hideLoadingScreen() {
+        // Function to hide the loading screen
+        function hideLoadingScreen() {
             document.querySelector('.loading-screen').style.display = 'none';
         }
 
-// Simulate a 3-second loading delay
-setTimeout(() => {
+        // Simulate a 3-second loading delay
+        setTimeout(() => {
             hideLoadingScreen(); // Hide the loading screen after 3 seconds
             // Load the game content after the loading screen disappears
             loadGameContent();
         }, 3000); // 3000 milliseconds (3 seconds)
 
- // Use a Promise to resolve when the content is loaded
- function loadGameContent() {
+        // Use a Promise to resolve when the content is loaded
+        function loadGameContent() {
             return new Promise((resolve, reject) => {
                 fetchAndDisplayImages()
                     .then(() => {
@@ -274,7 +283,6 @@ setTimeout(() => {
         loadGameContent().then(() => {
             hideLoadingScreen();
         });
-        
     </script>
 </body>
 </html>
