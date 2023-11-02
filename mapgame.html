@@ -191,6 +191,7 @@
             } else {
                 // If there are no more locations, stop moving the target
                 target.style.display = 'none';
+                gameOver = true;
             }
         }
 
@@ -211,6 +212,11 @@
             currentIndex++; // Move to the next location when the dot is clicked
             moveTarget();
             dotClicked = true; // Set the flag to true
+            if (gameOver) {
+                // Handle game over here
+                alert("Game Over! Your Final Score: " + score);
+                window.location.href = 'https://rliao569.github.io/Frontend-CSP/';
+            }
         });
         function startTimer(duration, display) {
     var timer = duration, minutes, seconds;
