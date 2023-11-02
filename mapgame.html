@@ -77,10 +77,26 @@
             flex-direction: column;
             align-items: center;
         }
+        /* Loading screen styles */
+        .loading-screen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: black;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* Ensure it's above other content */
+        }
     </style>
 </head>
 <body>
-    
+    <!-- Loading screen -->
+    <div class="loading-screen">
+        <h1>Game is loading... Sit (or stand?) tight!</h1>
+    </div>
     <!-- Navbar (sit on top) -->
     <div class="w3-top w3-hide-small">
         <div class "w3-bar w3-xlarge w3-black w3-opacity w3-hover-opacity-off" id="myNavbar">
@@ -221,6 +237,35 @@ window.onload = function () { //calls the method when the window is opened
     
 };
 
+// Function to hide the loading screen
+function hideLoadingScreen() {
+            document.querySelector('.loading-screen').style.display = 'none';
+        }
+
+// Simulate a 3-second loading delay
+setTimeout(() => {
+            hideLoadingScreen(); // Hide the loading screen after 3 seconds
+            // Load the game content after the loading screen disappears
+            loadGameContent();
+        }, 3000); // 3000 milliseconds (3 seconds)
+
+ // Use a Promise to resolve when the content is loaded
+ function loadGameContent() {
+            return new Promise((resolve, reject) => {
+                fetchAndDisplayImages()
+                    .then(() => {
+                        resolve();
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
+            });
+        }
+
+        // Load the game content and hide the loading screen when it's done
+        loadGameContent().then(() => {
+            hideLoadingScreen();
+        });
         
     </script>
 </body>
